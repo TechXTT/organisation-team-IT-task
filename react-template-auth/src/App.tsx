@@ -35,7 +35,7 @@ function App() {
                 <main className="form-signin">
                     <Route path="/" exact component={() => <Home name={name}/>}/>
                     <Route path="/login" component={() => <Login setName={setName}/>}/>
-                    <Route path="/register" component={Register}/>
+                    <Route path="/register" component={() => <Register setName={setName}/>}/>
                 </main>
             </BrowserRouter>
         </div>

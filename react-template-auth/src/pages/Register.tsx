@@ -10,36 +10,29 @@ const Register = (props: { setName: (name: string) => void }) => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        await fetch('http://localhost:8000/api/register', {
+        const response = await fetch('http://localhost:8000/api/register', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
             body: JSON.stringify({
                 name,
                 email,
                 password
             })
         });
-
-        const response = await fetch('http://localhost:8000/api/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include',
-            body: JSON.stringify({
-                email,
-                password
-            })
-        });
-
+        
+        // console.log(content);
         const content = await response.json();
-
+        console.log(content);
         setRedirect(true);
         props.setName(content.name);
     }
+        
 
+    
     if (redirect) {
         return <Redirect to="/"/>;
     }
-
     return (
         <form onSubmit={submit}>
             <h1 className="h3 mb-3 fw-normal">Please register</h1>
