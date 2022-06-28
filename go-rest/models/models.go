@@ -12,9 +12,10 @@ type User struct {
 }
 
 type Workspace struct {
-	Id     uint   `json:"id"`
-	Name   string `json:"name"`
-	UserId uint   `json:"uid"`
+	Id          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	UserId      uint   `json:"uid"`
 }
 
 type Task struct {

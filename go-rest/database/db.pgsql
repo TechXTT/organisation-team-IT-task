@@ -8,6 +8,7 @@ CREATE TABLE "users" (
 CREATE TABLE "workspaces" (
   "id" SERIAL PRIMARY KEY,
   "name" TEXT NOT NULL,
+  "description" TEXT NOT NULL,
   "uid" INT
 );
 

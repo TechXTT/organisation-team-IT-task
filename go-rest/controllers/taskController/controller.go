@@ -11,68 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateWorkspace(c *fiber.Ctx) error {
-	var data map[string]string
-
-	if err := c.BodyParser(&data); err != nil {
-		return err
-	}
-
-	uid, _ := strconv.ParseUint(data["uid"], 10, 64)
-
-	workspace := models.Workspace{
-		Name:   data["name"],
-		UserId: uint(uid),
-	}
-
-	sqlStatement := `INSERT INTO workspaces (name, user_id) VALUES ($1, $2) RETURNING id`
-	id := 0
-
-	err := database.DB.QueryRow(sqlStatement, workspace.Name, workspace.UserId).Scan(&id)
-	if err != nil {
-		return c.JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
-
-	return c.JSON(workspace)
-}
-
-func GetWorkspaces(c *fiber.Ctx) error {
-	var data map[string]string
-
-	if err := c.BodyParser(&data); err != nil {
-		return err
-	}
-
-	uid, _ := strconv.ParseUint(data["uid"], 10, 64)
-
-	sqlStatement := `SELECT id, name FROM workspaces WHERE user_id = $1`
-	rows, err := database.DB.Query(sqlStatement, uint(uid))
-	if err != nil {
-		return c.JSON(fiber.Map{
-			"message": err.Error(),
-		})
-	}
-
-	workspaces := []models.Workspace{}
-
-	for rows.Next() {
-		var workspace models.Workspace
-
-		err := rows.Scan(&workspace.Id, &workspace.Name)
-		if err != nil {
-			return c.JSON(fiber.Map{
-				"message": err.Error(),
-			})
-		}
-
-		workspaces = append(workspaces, workspace)
-	}
-
-	return c.JSON(workspaces)
-}
-
 func CreateTask(c *fiber.Ctx) error {
 	var data map[string]string
 
@@ -98,7 +36,7 @@ func CreateTask(c *fiber.Ctx) error {
 		Note:        data["note"],
 	}
 
-	sqlStatement := `INSERT INTO tasks (name, user_id, workspace_id, importance, done, created_at, expires_at, note) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
+	sqlStatement := `INSERT INTO tasks (name, uid, wsid, importance, done, created_at, expires_at, note) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
 	id := 0
 
 	err := database.DB.QueryRow(sqlStatement, task.Name, task.UserId, task.WorkspaceId, task.Importance, task.Done, task.CreatedAt, task.ExpiresAt, task.Note).Scan(&id)
@@ -121,7 +59,7 @@ func GetTasks(c *fiber.Ctx) error {
 	uid, _ := strconv.ParseUint(data["uid"], 10, 64)
 	wsid, _ := strconv.ParseUint(data["wsid"], 10, 64)
 
-	sqlStatement := `SELECT id, name, importance, done, created_at, expires_at, note FROM tasks WHERE user_id = $1 AND workspace_id = $2`
+	sqlStatement := `SELECT * FROM tasks WHERE uid = $1 AND wsid = $2`
 	rows, err := database.DB.Query(sqlStatement, uint(uid), uint(wsid))
 	if err != nil {
 		return c.JSON(fiber.Map{
@@ -134,7 +72,7 @@ func GetTasks(c *fiber.Ctx) error {
 	for rows.Next() {
 		var task models.Task
 
-		err := rows.Scan(&task.Id, &task.Name, &task.Importance, &task.Done, &task.CreatedAt, &task.ExpiresAt, &task.Note)
+		err := rows.Scan(&task.Id, &task.Name, &task.UserId, &task.WorkspaceId, &task.Importance, &task.Done, &task.CreatedAt, &task.ExpiresAt, &task.Note)
 		if err != nil {
 			return c.JSON(fiber.Map{
 				"message": err.Error(),
@@ -145,4 +83,66 @@ func GetTasks(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(tasks)
+}
+
+func UpdateTask(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	id, _ := strconv.ParseUint(data["id"], 10, 64)
+	uid, _ := strconv.ParseUint(data["uid"], 10, 64)
+	wsid, _ := strconv.ParseUint(data["wsid"], 10, 64)
+	importance, _ := strconv.Atoi(data["importance"])
+	done := data["done"] == "true"
+	created_at, _ := time.Parse("2006-01-02", data["created_at"])
+	expires_at, _ := time.Parse("2006-01-02", data["expires_at"])
+
+	task := models.Task{
+		Id:          uint(id),
+		Name:        data["name"],
+		UserId:      uint(uid),
+		WorkspaceId: uint(wsid),
+		Importance:  importance,
+		Done:        done,
+		CreatedAt:   created_at,
+		ExpiresAt:   expires_at,
+		Note:        data["note"],
+	}
+
+	sqlStatement := `UPDATE tasks SET name = $1, uid = $2, wsid = $3, importance = $4, done = $5, created_at = $6, expires_at = $7, note = $8 WHERE id = $9`
+
+	_, err := database.DB.Exec(sqlStatement, task.Name, task.UserId, task.WorkspaceId, task.Importance, task.Done, task.CreatedAt, task.ExpiresAt, task.Note, task.Id)
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(task)
+}
+
+func DeleteTask(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	id, _ := strconv.ParseUint(data["id"], 10, 64)
+
+	sqlStatement := `DELETE FROM tasks WHERE id = $1`
+
+	_, err := database.DB.Exec(sqlStatement, uint(id))
+	if err != nil {
+		return c.JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
 }
