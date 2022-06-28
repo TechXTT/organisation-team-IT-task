@@ -15,7 +15,6 @@ CREATE TABLE "workspaces" (
 CREATE TABLE "tasks" (
   "id" SERIAL PRIMARY KEY,
   "name" TEXT NOT NULL,
-  "importance" INT NOT NULL,
   "done" BOOL DEFAULT false,
   "created_at" DATE DEFAULT (CURRENT_DATE),
   "expire_at" DATE NOT NULL,
@@ -24,8 +23,8 @@ CREATE TABLE "tasks" (
   "uid" INT
 );
 
-ALTER TABLE "workspace" ADD FOREIGN KEY ("uid") REFERENCES "users" ("id");
+ALTER TABLE "workspaces" ADD FOREIGN KEY ("uid") REFERENCES "users" ("id");
 
-ALTER TABLE "task" ADD FOREIGN KEY ("uid") REFERENCES "users" ("id");
+ALTER TABLE "tasks" ADD FOREIGN KEY ("uid") REFERENCES "users" ("id");
 
-ALTER TABLE "task" ADD FOREIGN KEY ("wsid") REFERENCES "workspace" ("id");
+ALTER TABLE "tasks" ADD FOREIGN KEY ("wsid") REFERENCES "workspaces" ("id");

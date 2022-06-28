@@ -20,9 +20,7 @@ const Register = ({ logged, setLogged }) => {
             })
         });
 
-        // console.log(content);
-        const content = await response.json();
-        console.log(content);
+        await response.json();
         setLogged(true);
         navigate('/');
     }

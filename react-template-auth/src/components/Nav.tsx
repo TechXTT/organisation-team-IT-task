@@ -26,7 +26,6 @@ const Nav = (props: { name: string, setName: (name: string) => void }) => {
             </ul>
         )
     } else {
-        console.log(props.name);
         menu = (
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
                 <li className="nav-item active">

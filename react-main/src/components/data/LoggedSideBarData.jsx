@@ -22,12 +22,6 @@ export const LoggedSideBarData = [
         icon: <IoIcons.IoIosCheckmark />,
         cName: 'nav-text'
     },
-    // {
-    //     title: 'Calendar',
-    //     path: '/calendar',
-    //     icon: <IoIcons.IoIosCalendar />,
-    //     cName: 'nav-text'
-    // },
     {
         title: 'Settings',
         path: '/settings',

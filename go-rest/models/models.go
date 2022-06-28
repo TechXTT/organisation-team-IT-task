@@ -21,7 +21,6 @@ type Workspace struct {
 type Task struct {
 	Id          uint      `json:"id"`
 	Name        string    `json:"name"`
-	Importance  int       `json:"importance"`
 	Done        bool      `json:"done"`
 	CreatedAt   time.Time `json:"created_at"`
 	ExpiresAt   time.Time `json:"expires_at"`

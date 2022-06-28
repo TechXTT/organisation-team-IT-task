@@ -18,8 +18,7 @@ const Login = ({ logged, setLogged }) => {
             })
         });
 
-        const content = await response.json();
-        console.log(content);
+        await response.json();
         setLogged(true);
         navigate('/');
     }

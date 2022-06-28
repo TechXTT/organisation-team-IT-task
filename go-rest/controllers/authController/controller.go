@@ -31,15 +31,6 @@ func Register(c *fiber.Ctx) error {
 
 	sqlStatement := `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id`
 	id := 0
-	// err := database.DB.QueryRow(sqlStatement, user.Name, user.Email, user.Password)
-
-	// if err != nil {
-	// 	return c.JSON(fiber.Map{
-	// 		"message": err.Err(),
-	// 	})
-	// }
-
-	// return c.JSON(user)
 
 	err := database.DB.QueryRow(sqlStatement, user.Name, user.Email, user.Password).Scan(&id)
 	if err != nil {
