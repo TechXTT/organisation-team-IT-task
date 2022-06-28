@@ -53,3 +53,7 @@ yarn start
 - [GOLang](https://golang.org/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Fiber/v2](https://gofiber.io/)
+
+# Задача:
+
+<img src="task.png">
