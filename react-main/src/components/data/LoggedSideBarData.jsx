@@ -11,23 +11,23 @@ export const LoggedSideBarData = [
         cName: 'nav-text'
     },
     {
-        title: 'Workspaces',
-        path: '/workspaces',
-        icon: <IoIcons.IoIosPaper />,
-        cName: 'nav-text'
-    },
-    {
         title: 'To-Do',
         path: '/todo',
         icon: <IoIcons.IoIosList />,
         cName: 'nav-text'
     },
     {
-        title: 'Calendar',
-        path: '/calendar',
-        icon: <IoIcons.IoIosCalendar />,
+        title: 'Done',
+        path: '/done',
+        icon: <IoIcons.IoIosCheckmark />,
         cName: 'nav-text'
     },
+    // {
+    //     title: 'Calendar',
+    //     path: '/calendar',
+    //     icon: <IoIcons.IoIosCalendar />,
+    //     cName: 'nav-text'
+    // },
     {
         title: 'Settings',
         path: '/settings',
